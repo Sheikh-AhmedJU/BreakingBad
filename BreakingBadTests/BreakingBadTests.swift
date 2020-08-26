@@ -10,25 +10,42 @@ import XCTest
 @testable import BreakingBad
 
 class BreakingBadTests: XCTestCase {
+    var characters: Characters = []
+    
+    var mockContentData: Data {
+        return getData(name: "data")
+    }
 
+    func getData(name: String, withExtension: String = "json") -> Data {
+        let bundle = Bundle(for: type(of: self))
+        let fileUrl = bundle.url(forResource: name, withExtension: withExtension)
+        let data = try! Data(contentsOf: fileUrl!)
+        return data
+    }
+    
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
+        do {
+            let data = try JSONDecoder().decode([Character].self, from: getData(name: "data"))
+            characters = data
+        } catch (let err){
+            print(err.localizedDescription)
+        }
+        
     }
 
     override func tearDownWithError() throws {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
+        
     }
 
-    func testExample() throws {
+    func testLoadMockData() throws {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
+        XCTAssert(characters.count > 0)
     }
+    
 
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-        }
-    }
+   
 
 }
